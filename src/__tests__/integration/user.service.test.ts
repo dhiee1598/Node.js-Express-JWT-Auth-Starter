@@ -13,7 +13,9 @@ const userPayload = {
 describe("User Service", () => {
   describe("InsertUser function", () => {
     it("should insert new user", async () => {
-      const newUser = jest.spyOn(UserService, "InsertUser").mockResolvedValueOnce(userPayload);
+      const newUser = jest
+        .spyOn(UserService, "InsertUser")
+        .mockResolvedValueOnce(userPayload);
       expect(newUser).toBeDefined();
     });
 
@@ -26,7 +28,9 @@ describe("User Service", () => {
     it("should get user by email", async () => {
       jest.spyOn(UserService, "InsertUser").mockResolvedValueOnce(userPayload);
 
-      const user = jest.spyOn(UserService, "GetUserByEmail").mockResolvedValueOnce(userPayload);
+      const user = jest
+        .spyOn(UserService, "GetUserByEmail")
+        .mockResolvedValueOnce(userPayload);
       expect(user).toBeDefined();
     });
 
@@ -39,7 +43,9 @@ describe("User Service", () => {
     it("should get user by email", async () => {
       jest.spyOn(UserService, "InsertUser").mockResolvedValueOnce(userPayload);
 
-      const user = jest.spyOn(UserService, "GetUserById").mockResolvedValueOnce(userPayload);
+      const user = jest
+        .spyOn(UserService, "GetUserById")
+        .mockResolvedValueOnce(userPayload);
       expect(user).toBeDefined();
     });
 

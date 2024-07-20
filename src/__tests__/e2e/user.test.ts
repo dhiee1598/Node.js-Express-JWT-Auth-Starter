@@ -47,9 +47,13 @@ describe("Users API", () => {
     });
 
     it("should response with a conflict of email address", async () => {
-      // @ts-expect-error Something might went wrong
-      const mockUserEmail = jest.spyOn(UserService, "GetUserByEmail").mockReturnValueOnce(userPayload);
-      const { status, body } = await request(app).post("/api/users/auth/sign-up").send(userNewInput);
+      const mockUserEmail = jest
+        .spyOn(UserService, "GetUserByEmail")
+        // @ts-expect-error Something might went wrong
+        .mockReturnValueOnce(userPayload);
+      const { status, body } = await request(app)
+        .post("/api/users/auth/sign-up")
+        .send(userNewInput);
 
       expect(status).toBe(409);
       expect(body).toHaveProperty("message");
@@ -61,7 +65,9 @@ describe("Users API", () => {
       // @ts-expect-error Something might went wrong
       jest.spyOn(UserService, "InsertUser").mockReturnValueOnce(userPayload);
 
-      const { status, body } = await request(app).post("/api/users/auth/sign-up").send(userNewInput);
+      const { status, body } = await request(app)
+        .post("/api/users/auth/sign-up")
+        .send(userNewInput);
 
       expect(status).toBe(201);
       expect(body).toHaveProperty("message");
@@ -70,8 +76,12 @@ describe("Users API", () => {
     });
 
     it("should response with a status code of 500", async () => {
-      const mockUserInsert = jest.spyOn(UserService, "InsertUser").mockRejectedValueOnce("Oh now");
-      const { status } = await request(app).post("/api/users/auth/sign-up").send(userNewInput);
+      const mockUserInsert = jest
+        .spyOn(UserService, "InsertUser")
+        .mockRejectedValueOnce("Oh now");
+      const { status } = await request(app)
+        .post("/api/users/auth/sign-up")
+        .send(userNewInput);
 
       expect(status).toBe(500);
       expect(mockUserInsert).toHaveBeenCalled();
@@ -96,9 +106,13 @@ describe("Users API", () => {
     });
 
     it("should response with an invalid email address", async () => {
-      // @ts-expect-error Something might went wrong
-      const mockUserEmail = jest.spyOn(UserService, "GetUserByEmail").mockReturnValueOnce(null);
-      const { status, body } = await request(app).post("/api/users/auth/sign-in").send(userAuthInput);
+      const mockUserEmail = jest
+        .spyOn(UserService, "GetUserByEmail")
+        // @ts-expect-error Something might went wrong
+        .mockReturnValueOnce(null);
+      const { status, body } = await request(app)
+        .post("/api/users/auth/sign-in")
+        .send(userAuthInput);
 
       expect(status).toBe(401);
       expect(body).toHaveProperty("message");
@@ -111,7 +125,9 @@ describe("Users API", () => {
       // @ts-expect-error Something might went wrong
       jest.spyOn(Password, "IsValidPassword").mockReturnValueOnce(false);
 
-      const { status, body } = await request(app).post("/api/users/auth/sign-in").send(userAuthInput);
+      const { status, body } = await request(app)
+        .post("/api/users/auth/sign-in")
+        .send(userAuthInput);
 
       expect(status).toBe(401);
       expect(body).toHaveProperty("message");
@@ -120,13 +136,21 @@ describe("Users API", () => {
     it("should response with a user is authenticated", async () => {
       // @ts-expect-error Something might went wrong
       jest.spyOn(UserService, "GetUserByEmail").mockReturnValueOnce(userPayload);
-      // @ts-expect-error Something might went wrong
-      const mockPassword = jest.spyOn(Password, "IsValidPassword").mockReturnValueOnce(true);
 
-      const { status, body, headers } = await request(app).post("/api/users/auth/sign-in").send(userAuthInput);
+      const mockPassword = jest
+        .spyOn(Password, "IsValidPassword")
+        // @ts-expect-error Something might went wrong
+        .mockReturnValueOnce(true);
+
+      const { status, body, headers } = await request(app)
+        .post("/api/users/auth/sign-in")
+        .send(userAuthInput);
 
       expect(status).toBe(200);
-      expect(mockPassword).toHaveBeenCalledWith(userAuthInput.password, userPayload.password);
+      expect(mockPassword).toHaveBeenCalledWith(
+        userAuthInput.password,
+        userPayload.password
+      );
       expect(body).toHaveProperty("message");
       expect(body).toHaveProperty("user");
       expect(body).toHaveProperty("accessToken");
@@ -146,14 +170,20 @@ describe("Users API", () => {
     });
 
     it("should response with token is invalid", async () => {
-      const { status } = await request(app).get("/api/users").set("Authorization", `Bearer asddadas`);
+      const { status } = await request(app)
+        .get("/api/users")
+        .set("Authorization", `Bearer asddadas`);
       expect(status).toBe(403);
     });
 
     it("should response with token is expired", async () => {
-      const token = jwt.sign({ userId: "sample" }, env.ACCESS_TOKEN_SECRET, { expiresIn: -1 });
+      const token = jwt.sign({ userId: "sample" }, env.ACCESS_TOKEN_SECRET, {
+        expiresIn: -1,
+      });
 
-      const { status, body } = await request(app).get("/api/users").set("Authorization", `Bearer ${token}`);
+      const { status, body } = await request(app)
+        .get("/api/users")
+        .set("Authorization", `Bearer ${token}`);
       expect(status).toBe(401);
       expect(body).toHaveProperty("message");
       expect(body.message).toBe("The provided token has expired.");
@@ -164,7 +194,9 @@ describe("Users API", () => {
       jest.spyOn(UserService, "GetUserById").mockReturnValueOnce(null);
       const accessToken = GenerateAccessToken(userPayload.id);
 
-      const { status, body } = await request(app).get("/api/users").set("Authorization", `Bearer ${accessToken}`);
+      const { status, body } = await request(app)
+        .get("/api/users")
+        .set("Authorization", `Bearer ${accessToken}`);
       expect(status).toBe(401);
       expect(body).toHaveProperty("message");
     });
@@ -175,7 +207,9 @@ describe("Users API", () => {
 
       const accessToken = GenerateAccessToken(userPayload.id);
 
-      const { status, body } = await request(app).get("/api/users").set("Authorization", `Bearer ${accessToken}`);
+      const { status, body } = await request(app)
+        .get("/api/users")
+        .set("Authorization", `Bearer ${accessToken}`);
       expect(status).toBe(200);
       expect(body).toHaveProperty("user");
     });
@@ -198,7 +232,9 @@ describe("Users API", () => {
     });
 
     it("should response with token is expired", async () => {
-      const token = jwt.sign({ userId: "sample" }, env.ACCESS_TOKEN_SECRET, { expiresIn: -1 });
+      const token = jwt.sign({ userId: "sample" }, env.ACCESS_TOKEN_SECRET, {
+        expiresIn: -1,
+      });
 
       const { status, body } = await request(app)
         .post("/api/users/auth/sign-out")

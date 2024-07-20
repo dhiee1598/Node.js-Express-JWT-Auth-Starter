@@ -6,65 +6,71 @@ import { HashPassword, IsValidPassword } from "../utilities/password.utils";
 import { GenerateAccessToken, GenerateRefreshToken } from "../utilities/generate.token";
 import StoreCookieToken from "../utilities/store.cookie";
 
-export const RegisterUser: RequestHandler<unknown, UserResponse, UserNewRequest, unknown> = asyncHandler(
-  async (req, res) => {
-    const user = await GetUserByEmail(req.body.email);
+export const RegisterUser: RequestHandler<
+  unknown,
+  UserResponse,
+  UserNewRequest,
+  unknown
+> = asyncHandler(async (req, res) => {
+  const user = await GetUserByEmail(req.body.email);
 
-    // * Check if the email address is already taken
-    if (user) {
-      res.status(409);
-      // ! Throw Error if email address is already taken
-      throw new Error("Email address is already taken.");
-    }
-
-    const hashPass = await HashPassword(req.body.password);
-
-    // * Create a new user
-    const newUser = await InsertUser({ ...req.body, password: hashPass });
-
-    // * Respond with message and newly created user data
-    res.status(201).json({
-      message: "New user created successfully.",
-      user: newUser,
-    });
+  // * Check if the email address is already taken
+  if (user) {
+    res.status(409);
+    // ! Throw Error if email address is already taken
+    throw new Error("Email address is already taken.");
   }
-);
 
-export const AuthenticateUser: RequestHandler<unknown, UserResponse, UserAuthRequest, unknown> = asyncHandler(
-  async (req, res) => {
-    const user = await GetUserByEmail(req.body.email);
+  const hashPass = await HashPassword(req.body.password);
 
-    // * Check if user is authorize
-    if (!user) {
-      res.status(401);
-      // ! Throw Error if email is invalid
-      throw new Error("Email address is invalid");
-    }
+  // * Create a new user
+  const newUser = await InsertUser({ ...req.body, password: hashPass });
 
-    if (!(await IsValidPassword(req.body.password, user.password))) {
-      res.status(401);
-      // ! Throw Error if email is invalid
-      throw new Error("Email and password does not match.");
-    }
+  // * Respond with message and newly created user data
+  res.status(201).json({
+    message: "New user created successfully.",
+    user: newUser,
+  });
+});
 
-    // * Generate access and refresh tokens for the authenticated user
-    const accessToken = GenerateAccessToken(user.id);
-    const refreshToken = GenerateRefreshToken(user.id);
+export const AuthenticateUser: RequestHandler<
+  unknown,
+  UserResponse,
+  UserAuthRequest,
+  unknown
+> = asyncHandler(async (req, res) => {
+  const user = await GetUserByEmail(req.body.email);
 
-    // * Store the refresh token in an HTTP-only cookie
-    StoreCookieToken(res, "refreshToken", refreshToken);
-
-    // * Respond with a message and the user. And also the generated access token
-    res.status(200).json({
-      message: "User successfully authenticated.",
-      user: user,
-      accessToken: accessToken,
-    });
+  // * Check if user is authorize
+  if (!user) {
+    res.status(401);
+    // ! Throw Error if email is invalid
+    throw new Error("Email address is invalid");
   }
-);
 
-export const AuthorizeUser: RequestHandler<unknown, UserResponse, unknown, unknown> = asyncHandler(
-  async (req, res) => {
+  if (!(await IsValidPassword(req.body.password, user.password))) {
+    res.status(401);
+    // ! Throw Error if email is invalid
+    throw new Error("Email and password does not match.");
+  }
+
+  // * Generate access and refresh tokens for the authenticated user
+  const accessToken = GenerateAccessToken(user.id);
+  const refreshToken = GenerateRefreshToken(user.id);
+
+  // * Store the refresh token in an HTTP-only cookie
+  StoreCookieToken(res, "refreshToken", refreshToken);
+
+  // * Respond with a message and the user. And also the generated access token
+  res.status(200).json({
+    message: "User successfully authenticated.",
+    user: user,
+    accessToken: accessToken,
+  });
+});
+
+export const AuthorizeUser: RequestHandler<unknown, UserResponse, unknown, unknown> =
+  asyncHandler(async (req, res) => {
     const id = req.userId;
 
     const user = await GetUserById(id);
@@ -80,8 +86,7 @@ export const AuthorizeUser: RequestHandler<unknown, UserResponse, unknown, unkno
       message: "Authorize user",
       user: user,
     });
-  }
-);
+  });
 
 export const DeAuthenticateUser: RequestHandler = asyncHandler(async (req, res) => {
   // * Clear the stored refresh token cookie

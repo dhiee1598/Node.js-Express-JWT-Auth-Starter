@@ -32,9 +32,13 @@ describe("Token", () => {
     });
 
     it("should response with token is invalid", async () => {
-      const token = jwt.sign({ userId: userPayload.id }, env.REFRESH_TOKEN_SECRET, { expiresIn: -1 });
+      const token = jwt.sign({ userId: userPayload.id }, env.REFRESH_TOKEN_SECRET, {
+        expiresIn: -1,
+      });
 
-      const { status, body } = await agent.post("/auth/token/renew").set("Cookie", `refreshToken=${token}`);
+      const { status, body } = await agent
+        .post("/auth/token/renew")
+        .set("Cookie", `refreshToken=${token}`);
 
       expect(status).toBe(403);
       expect(body).toHaveProperty("message");
@@ -46,11 +50,15 @@ describe("Token", () => {
       // @ts-expect-error Something might went wrong
       jest.spyOn(Password, "IsValidPassword").mockReturnValueOnce(true);
 
-      const loginResponse = await agent.post("/api/users/auth/sign-in").send(userAuthInput);
+      const loginResponse = await agent
+        .post("/api/users/auth/sign-in")
+        .send(userAuthInput);
 
       const refreshToken = loginResponse.headers["set-cookie"][0].split(";")[0];
 
-      const { status, body } = await agent.post("/auth/token/renew").set("Cookie", refreshToken);
+      const { status, body } = await agent
+        .post("/auth/token/renew")
+        .set("Cookie", refreshToken);
 
       expect(status).toBe(200);
       expect(body).toHaveProperty("message");

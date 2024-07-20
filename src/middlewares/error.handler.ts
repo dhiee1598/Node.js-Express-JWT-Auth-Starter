@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Request, Response, NextFunction } from "express";
 import { ErrorResponse } from "../interfaces/error.props";
+import env from "../utilities/env";
 
 export const NotFound = (req: Request, res: Response, next: NextFunction) => {
   // * Set HTTP status code to 404 (Not Found)
@@ -12,8 +14,12 @@ export const NotFound = (req: Request, res: Response, next: NextFunction) => {
   next(error);
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const ErrorHandler = (error: ErrorResponse, req: Request, res: Response, next: NextFunction) => {
+export const ErrorHandler = (
+  error: ErrorResponse,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   // * Determine the HTTP status code to send in the response
   const statusCode = res.statusCode !== 200 ? res.statusCode : 500;
 
@@ -23,6 +29,6 @@ export const ErrorHandler = (error: ErrorResponse, req: Request, res: Response, 
   // * Send an error response with the error message and stack trace (in development)
   res.json({
     message: error.message,
-    stacks: error.stack,
+    stacks: env.NODE_ENV === "production" ? "🍪" : error.stack,
   });
 };

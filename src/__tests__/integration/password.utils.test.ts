@@ -60,7 +60,9 @@ describe("Password Utilities", () => {
       const errorMessage = "Comparing hash password failed";
 
       (bcrypt.compare as jest.Mock).mockRejectedValue(new Error(errorMessage));
-      await expect(Password.IsValidPassword(plainPassword, hashPass)).rejects.toThrow(errorMessage);
+      await expect(Password.IsValidPassword(plainPassword, hashPass)).rejects.toThrow(
+        errorMessage
+      );
     });
   });
 });
