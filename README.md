@@ -14,11 +14,11 @@ Sequelize for database interactions, TypeScript for type safety, and a suite of 
 
 ### Install Dependencies
 
-  npm install
+    npm install
 
 ### Build the project
 
-  npm run build
+    npm run build
 
 ### Start the application in production
 
