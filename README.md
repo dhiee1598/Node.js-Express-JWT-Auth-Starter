@@ -22,16 +22,16 @@ Sequelize for database interactions, TypeScript for type safety, and a suite of 
 
 ### Start the application in production
 
-  npm run start
+    npm run start
 
 ### Start the development server
 
-  npm run serve
+    npm run serve
 
 ### Linting
 
-  npm run lint
+    npm run lint
 
 ### Run test
 
-  npm run test
+    npm run test
