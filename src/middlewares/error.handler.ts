@@ -16,9 +16,9 @@ export const NotFound = (req: Request, res: Response, next: NextFunction) => {
 
 export const ErrorHandler = (
   error: ErrorResponse,
-  req: Request,
+  _: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ) => {
   // * Determine the HTTP status code to send in the response
   const statusCode = res.statusCode !== 200 ? res.statusCode : 500;

@@ -1,7 +1,6 @@
 import { Sequelize } from "sequelize";
 import env from "./env";
-import pg from "pg";
 
-const sequelize = new Sequelize(env.CONNECTION_URI, { dialectModule: pg, dialect: "postgres" });
+const sequelize = new Sequelize(env.CONNECTION_URI, { dialect: "mariadb" });
 
 export default sequelize;

@@ -24,7 +24,7 @@ const ExpressConfig = (): Application => {
   );
 
   // * MAIN HEALTH CHECK ROUTE
-  app.get("/main/healthcheck", (req: Request, res: Response) => {
+  app.get("/main/healthcheck", (_: Request, res: Response) => {
     res.status(200).json({ message: "HAPPY CODING - 👋✨🌍" });
   });
 

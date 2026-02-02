@@ -78,12 +78,16 @@ describe("Users API", () => {
     it("should response with a status code of 500", async () => {
       const mockUserInsert = jest
         .spyOn(UserService, "InsertUser")
-        .mockRejectedValueOnce("Oh now");
-      const { status } = await request(app)
+        .mockImplementationOnce(() => {
+          throw new Error("Database error");
+        });
+
+      const { status, body } = await request(app)
         .post("/api/users/auth/sign-up")
         .send(userNewInput);
 
       expect(status).toBe(500);
+      expect(body).toHaveProperty("message");
       expect(mockUserInsert).toHaveBeenCalled();
     });
   });
