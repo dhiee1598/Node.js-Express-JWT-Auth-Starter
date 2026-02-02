@@ -1,0 +1,32 @@
+services:
+  app:
+    container_name: node-express
+    restart: unless-stopped 
+    build:
+      context: .
+      dockerfile: Dockerfile
+    
+    environment:
+      - TZ=Asia/Manila 
+      - PORT=${PORT}
+      - CONNECTION_URI=${CONNECTION_URI}
+      - SERVER_URL=${SERVER_URL}
+      - FRONTEND_URL=${FRONTEND_URL}
+      - ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
+      - ACCESS_TOKEN_EXPIRATION=${ACCESS_TOKEN_EXPIRATION}
+      - REFRESH_TOKEN_SECRET=${REFRESH_TOKEN_SECRET}
+      - REFRESH_TOKEN_EXPIRATION=${REFRESH_TOKEN_EXPIRATION}
+      - COOKIE_EXPIRATION_DAYS=${COOKIE_EXPIRATION_DAYS}
+      - NODE_ENV=${NODE_ENV}
+
+    ports:
+      - "3005:3000"
+    networks:
+      - mariadb_mariadb_internal
+      - cloudflare_net
+
+networks:
+  mariadb_mariadb_internal:
+    external: true
+  cloudflare_net:
+    external: true
