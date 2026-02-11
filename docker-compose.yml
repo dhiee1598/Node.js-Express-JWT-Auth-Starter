@@ -22,11 +22,11 @@ services:
     ports:
       - "3005:3000"
     networks:
-      - mariadb_mariadb_internal
+      - compose_mariadb_internal
       - cloudflare_net
 
 networks:
-  mariadb_mariadb_internal:
+  compose_mariadb_internal:
     external: true
   cloudflare_net:
     external: true
